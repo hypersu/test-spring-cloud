@@ -8,6 +8,11 @@ spring:
     password: ht123abc*#
   application:
     name: orderservice
+  cloud:
+    loadbalancer:
+      eager-load:
+        clients:
+          - userservice
 
 eureka:
   client:
@@ -29,7 +34,13 @@ mybatis-plus:
 logging:
   level:
     com.example.orderservice: debug
+    org.springframework.cloud: debug
 
-userservice:
-  riddon:
-    listOfServers: localhost:8081,localhost:8082
+# 不能使用生产中需要维护IP
+#userservice:
+#  riddon:
+#    listOfServers: localhost:8081,localhost:8082
+
+# 测试Env
+my:
+  config: 1
