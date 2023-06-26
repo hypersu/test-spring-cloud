@@ -8,11 +8,14 @@ spring:
     password: ht123abc*#
   application:
     name: userservice
+  cloud:
+    nacos:
+      server-addr: localhost:8848
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:10086/eureka
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:10086/eureka
 
 mybatis-plus:
   mapper-locations: classpath*:com/example/**/*Mapper.xml
