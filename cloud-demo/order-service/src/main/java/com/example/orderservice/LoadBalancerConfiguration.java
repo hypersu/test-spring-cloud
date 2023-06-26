@@ -1,0 +1,32 @@
+package com.example.orderservice;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.loadbalancer.core.RandomLoadBalancer;
+import org.springframework.cloud.loadbalancer.core.ReactorLoadBalancer;
+import org.springframework.cloud.loadbalancer.core.RoundRobinLoadBalancer;
+import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
+import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+
+import java.util.Arrays;
+
+@Slf4j
+public class LoadBalancerConfiguration {
+
+    @Bean
+    public ReactorLoadBalancer<ServiceInstance> reactorServiceInstanceLoadBalancer(Environment environment,
+                                                                                   LoadBalancerClientFactory loadBalancerClientFactory) {
+        String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
+        log.info("environment----------:" + name);
+        // 可以获取属性文件中的参数
+        log.info("environment----------:" + environment.getProperty("my.config"));
+        log.info("environments----------:" + Arrays.toString(environment.getActiveProfiles()));
+        log.info("environments----------:" + Arrays.toString(environment.getDefaultProfiles()));
+        return new RandomLoadBalancer(
+                loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class), name);
+    }
+
+}

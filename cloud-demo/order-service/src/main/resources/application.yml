@@ -8,6 +8,10 @@ spring:
     password: 123456
   application:
     name: orderservice
+  loadbalancer:
+    eager-load:
+      clients:
+        - userservice
   cloud:
     nacos:
       server-addr: 192.168.119.128:8848
@@ -32,7 +36,13 @@ mybatis-plus:
 logging:
   level:
     com.example.orderservice: debug
+    org.springframework.cloud: debug
 
-userservice:
-  riddon:
-    listOfServers: localhost:8081,localhost:8082
+# 不能使用生产中需要维护IP
+#userservice:
+#  riddon:
+#    listOfServers: localhost:8081,localhost:8082
+
+# 测试Env
+my:
+  config: 1
