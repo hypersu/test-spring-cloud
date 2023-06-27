@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.119.128:3306/cloud-order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/cloud-order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
-    password: 123456
+    password: ht123abc*#
   application:
     name: orderservice
   loadbalancer:
@@ -14,9 +14,12 @@ spring:
         - userservice
   cloud:
     nacos:
-      server-addr: 192.168.119.128:8848
+      server-addr: localhost:8848
       discovery:
         cluster-name: HZ
+        group: DEFAULT_GROUP
+        namespace: 1f34f3fd-1344-4c15-9dda-decab1eaf9f7
+        ephemeral: false
 
 #eureka:
 #  client:
