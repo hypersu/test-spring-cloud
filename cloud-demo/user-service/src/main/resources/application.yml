@@ -27,3 +27,6 @@ mybatis-plus:
 logging:
   level:
     com.example.userservice: debug
+
+pattern:
+  name: 本地环境local
