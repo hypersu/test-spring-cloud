@@ -5,7 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/cloud-order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
-    password: 123456
+    password: ht123abc*#
   application:
     name: orderservice
   loadbalancer:
@@ -18,7 +18,7 @@ spring:
       discovery:
         cluster-name: HZ
         group: DEFAULT_GROUP
-        namespace: f1991878-106a-488b-b275-e42f11e408c9
+        #namespace: f1991878-106a-488b-b275-e42f11e408c9
         ephemeral: false
 
 #eureka:
