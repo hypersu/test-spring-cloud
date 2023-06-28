@@ -10,15 +10,12 @@ spring:
         cluster-name: HZ
     gateway:
       routes:
-        - id: user-service
-          uri: ld://userservice
-          predicates:
-            - Path=/user/**
-        - id: order-service
-          uri: ld://orderservice
-          predicates:
-            - Path=/order/**
-logging:
-  level:
-    org.springframework.*: debug
-    com.alibaba.*: debug
+      - id: user-service
+        uri: lb://userservice
+        predicates:
+        - Path=/user/**
+      - id: order-service
+        uri: lb://orderservice
+        predicates:
+        - Path=/order/**
+        - Before=2023-06-28T17:42:47.789-08:00[Asia/Shanghai]
