@@ -1,0 +1,24 @@
+server:
+  port: 10010
+spring:
+  application:
+    name: gateway
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        cluster-name: HZ
+    gateway:
+      routes:
+        - id: user-service
+          uri: ld://userservice
+          predicates:
+            - Path=/user/**
+        - id: order-service
+          uri: ld://orderservice
+          predicates:
+            - Path=/order/**
+logging:
+  level:
+    org.springframework.*: debug
+    com.alibaba.*: debug
