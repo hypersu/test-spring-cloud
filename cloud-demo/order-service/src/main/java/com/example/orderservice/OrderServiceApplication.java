@@ -1,5 +1,7 @@
 package com.example.orderservice;
 
+import com.example.feignapi.clients.UserClient;
+import com.example.feignapi.config.DefaultFeignConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -8,7 +10,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-@EnableFeignClients
+@EnableFeignClients(clients = UserClient.class, defaultConfiguration = DefaultFeignConfiguration.class)
 // 配置随机策略
 //@LoadBalancerClient(name = "userservice", configuration = LoadBalancerConfiguration.class)
 // 配置nacos策略

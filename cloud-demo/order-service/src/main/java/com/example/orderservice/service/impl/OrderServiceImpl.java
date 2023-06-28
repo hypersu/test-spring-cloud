@@ -1,10 +1,10 @@
 package com.example.orderservice.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.orderservice.clients.UserClient;
+import com.example.feignapi.clients.UserClient;
+import com.example.feignapi.pojo.User;
 import com.example.orderservice.mapper.OrderMapper;
 import com.example.orderservice.pojo.Order;
-import com.example.orderservice.pojo.User;
 import com.example.orderservice.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

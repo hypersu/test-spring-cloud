@@ -20,6 +20,15 @@ spring:
         group: DEFAULT_GROUP
         #namespace: f1991878-106a-488b-b275-e42f11e408c9
         ephemeral: false
+    openfeign:
+      httpclient:
+        enabled: true
+        max-connections: 200
+        max-connections-per-route: 50 # 每个路径最大连接数
+#      client:
+#        config:
+#          default:
+#            logger-level: FULL
 
 #eureka:
 #  client:
