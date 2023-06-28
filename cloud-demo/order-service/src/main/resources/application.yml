@@ -3,7 +3,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.119.128:3306/cloud-order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/cloud-order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
   application:
@@ -14,11 +14,11 @@ spring:
         - userservice
   cloud:
     nacos:
-      server-addr: 192.168.119.128:8848
+      server-addr: localhost:8848
       discovery:
         cluster-name: HZ
         group: DEFAULT_GROUP
-        namespace: ca532f10-902e-4423-8977-7fdd9b9e3a32
+        namespace: f1991878-106a-488b-b275-e42f11e408c9
         ephemeral: false
 
 #eureka:
