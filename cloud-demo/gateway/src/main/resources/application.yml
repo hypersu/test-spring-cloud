@@ -14,8 +14,29 @@ spring:
         uri: lb://userservice
         predicates:
         - Path=/user/**
+        filters:
+        - AddRequestHeader=Trust, hello word!
       - id: order-service
         uri: lb://orderservice
         predicates:
         - Path=/order/**
         - Before=2023-06-28T17:42:47.789-08:00[Asia/Shanghai]
+      default-filters:
+      - AddRequestHeader=Trust, hello word default-filter!
+      # 全局的跨域处理
+      globalcors:
+        # 解决options请求拦截问题
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: # 允许哪些网站的跨域请求
+            - "http://localhost:1234"
+            allowedMethods:
+            - "GET"
+            - "POST"
+            - "DELETE"
+            - "PUT"
+            - "OPTIONS"
+            allowedHeaders: "*" # 允许在请求中携带头信息
+            allowCredentials: true # 是否允许携带cookie
+            maxAge: 360000 # 这次跨域检测的有效期
