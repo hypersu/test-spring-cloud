@@ -1,0 +1,20 @@
+services:
+  mysql:
+    image: mysql:latest
+    volumes:
+    - "$PWD/mysql/data:/var/lib/mysql"
+    - "$PWD/mysql/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf"
+  nacos:
+    image: nacos/nacos-server
+    environment:
+      MODE: standalone
+    ports:
+    - "8848:8848"
+  userservice:
+    build: ./user-service
+  orderservice:
+    build: ./order-service
+  gateway:
+    build: ./gateway
+    ports:
+    - "10010:10010"
