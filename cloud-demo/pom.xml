@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>cloud-demo</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>cloud-demo</name>
     <description>cloud-demo</description>
     <packaging>pom</packaging>
@@ -25,6 +25,7 @@
     <modules>
         <module>eureka-server</module>
         <module>user-service</module>
+        <module>feign-api</module>
         <module>order-service</module>
         <module>gateway</module>
     </modules>
