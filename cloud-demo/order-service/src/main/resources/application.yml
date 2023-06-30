@@ -1,25 +1,27 @@
 server:
   port: 8080
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/cloud-order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    username: root
-    password: ht123abc*#
   application:
     name: orderservice
-  loadbalancer:
-    eager-load:
-      clients:
-        - userservice
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/cloud-order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
   cloud:
     nacos:
-      server-addr: localhost:8848
+      username: nacos
+      password: nacos
+      server-addr: nacos:8848
       discovery:
         cluster-name: HZ
         group: DEFAULT_GROUP
         #namespace: f1991878-106a-488b-b275-e42f11e408c9
         ephemeral: false
+    loadbalancer:
+      eager-load:
+        clients:
+        - userservice
     openfeign:
       httpclient:
         enabled: true
