@@ -10,9 +10,9 @@ import java.util.concurrent.TimeoutException;
 
 public class PublisherTest {
     @Test
-    public void testSendMessage() throws IOException, TimeoutException {
+    public void testSendMessage2SimpleQueue() throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("192.168.119.128");
+        factory.setHost("192.168.16.101");
         factory.setPort(5672);
         factory.setUsername("rabbit");
         factory.setPassword("rabbit");
@@ -27,6 +27,7 @@ public class PublisherTest {
         channel.queueDeclare(queue, false, false, false, null);
 
         String message = "hello word!";
+        // exchange not be null
         channel.basicPublish("", queue, null, message.getBytes());
 
         channel.close();
