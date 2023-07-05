@@ -29,6 +29,7 @@ public class HotelIndexTest {
 
     @BeforeEach
     void setUp() throws IOException {
+        // 使用ca 证书里面包含ca 公钥和一些ca信息
         ClassPathResource classPathResource = new ClassPathResource("http_ca.crt");
 
         SSLContext sslContext = TransportUtils.sslContextFromHttpCaCrt(classPathResource.getFile());
