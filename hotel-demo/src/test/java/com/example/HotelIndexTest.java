@@ -1,11 +1,11 @@
 package com.example;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.indices.CreateIndexRequest;
-import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
+import co.elastic.clients.elasticsearch.indices.*;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.TransportUtils;
+import co.elastic.clients.transport.endpoints.BooleanResponse;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -64,6 +64,22 @@ public class HotelIndexTest {
                 .build();
         CreateIndexResponse response = client.indices().create(request);
         System.out.println(response);
+    }
+
+    @Test
+    void testDeleteIndex() throws IOException {
+        DeleteIndexRequest request = new DeleteIndexRequest
+                .Builder().index("hotel").build();
+        DeleteIndexResponse response = client.indices().delete(request);
+        System.out.println(response);
+    }
+
+    @Test
+    void testExistsIndex() throws IOException {
+        ExistsRequest request = new ExistsRequest
+                .Builder().index("hotel").build();
+        BooleanResponse response = client.indices().exists(request);
+        System.out.println(response.value());
     }
 
     @AfterEach
