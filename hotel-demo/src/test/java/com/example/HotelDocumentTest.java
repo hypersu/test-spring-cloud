@@ -1,8 +1,8 @@
 package com.example;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.IndexRequest;
-import co.elastic.clients.elasticsearch.core.IndexResponse;
+import co.elastic.clients.elasticsearch.core.*;
+import co.elastic.clients.elasticsearch.core.bulk.BulkResponseItem;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.TransportUtils;
@@ -26,6 +26,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
+import java.util.List;
 
 @SpringBootTest
 public class HotelDocumentTest {
@@ -78,7 +79,57 @@ public class HotelDocumentTest {
                 .index("hotel")
                 .id("36934")
                 .document(hotelDoc).build();
-        IndexResponse response= client.index(indexRequest);
+        IndexResponse response = client.index(indexRequest);
         System.out.println(response);
+    }
+
+    @Test
+    void testGetDocument() throws IOException {
+        GetRequest getRequest = new GetRequest.Builder()
+                .index("hotel").id("36934").build();
+        GetResponse<HotelDoc> getResponse = client.get(getRequest, HotelDoc.class);
+        System.out.println(getResponse.found());
+        HotelDoc hotelDoc = getResponse.source();
+        System.out.println(getResponse.id());
+        System.out.println(hotelDoc);
+    }
+
+    @Test
+    void testUpdateDocument() throws IOException {
+        HotelDoc hotelDoc = new HotelDoc();
+        hotelDoc.setPrice(500);
+        hotelDoc.setStarName("四钻");
+        UpdateRequest<HotelDoc, HotelDoc> updateRequest = new UpdateRequest.Builder<HotelDoc, HotelDoc>()
+                .index("hotel").id("36934")
+                .doc(hotelDoc)
+                .build();
+        UpdateResponse<HotelDoc> updateResponse = client.update(updateRequest, HotelDoc.class);
+        System.out.println(updateResponse.id());
+    }
+
+    @Test
+    void testDeleteDocument() throws IOException {
+        DeleteRequest deleteRequest = new DeleteRequest.Builder()
+                .index("hotel").id("36934").build();
+        DeleteResponse deleteResponse = client.delete(deleteRequest);
+        System.out.println(deleteResponse);
+    }
+
+    @Test
+    void testBulkRequest() throws IOException {
+        BulkRequest.Builder builder = new BulkRequest.Builder();
+        List<Hotel> list = hotelService.list();
+        for (Hotel hotel : list) {
+            HotelDoc doc = new HotelDoc(hotel);
+            builder.operations(fn -> fn.index(idx -> idx.index("hotel").id(doc.getId().toString()).document(doc)));
+        }
+        BulkResponse bulkResponse = client.bulk(builder.build());
+        List<BulkResponseItem> responseItems = bulkResponse.items();
+        for (BulkResponseItem responseItem : responseItems) {
+            System.out.println(responseItem.result());
+            if (responseItem.error() != null) {
+                System.out.println(responseItem.error().reason());
+            }
+        }
     }
 }
