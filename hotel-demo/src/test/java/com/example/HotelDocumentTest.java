@@ -121,7 +121,7 @@ public class HotelDocumentTest {
         List<Hotel> list = hotelService.list();
         for (Hotel hotel : list) {
             HotelDoc doc = new HotelDoc(hotel);
-            builder.operations(fn -> fn.index(idx -> idx.index("hotel").id(doc.getId().toString()).document(doc)));
+            builder.operations(b -> b.index(idx -> idx.index("hotel").id(doc.getId().toString()).document(doc)));
         }
         BulkResponse bulkResponse = client.bulk(builder.build());
         List<BulkResponseItem> responseItems = bulkResponse.items();
