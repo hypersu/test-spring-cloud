@@ -3,6 +3,7 @@ package com.example;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOptionsBuilders;
 import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.aggregations.*;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -153,6 +154,39 @@ public class HotelSearchTest {
                 }
             }
             System.out.println(hotelDoc);
+        }
+    }
+
+    @Test
+    void testAggregation() throws IOException {
+        SearchRequest searchRequest = new SearchRequest.Builder()
+                .index("hotel")
+                .size(0)
+                .aggregations("brandAgg",
+                        new Aggregation.Builder()
+                                .terms(new TermsAggregation
+                                        .Builder()
+                                        .field("brand")
+                                        .size(20)
+                                        .build()
+                                ).build()
+                ).build();
+
+        SearchResponse<HotelDoc> searchResponse = client.search(
+                searchRequest,
+                HotelDoc.class);
+
+        Map<String, Aggregate> map = searchResponse.aggregations();
+        Aggregate aggregate = map.get("brandAgg");
+        System.out.println(aggregate);
+        System.out.println(aggregate._kind());
+        StringTermsAggregate stringTermsAggregate = aggregate.sterms();
+        Buckets<StringTermsBucket> buckets = stringTermsAggregate.buckets();
+        List<StringTermsBucket> list = buckets.array();
+        for (StringTermsBucket bucket :
+                list) {
+            System.out.println(bucket.key()._toJsonString());
+            // System.out.println(bucket.docCount());
         }
     }
 }

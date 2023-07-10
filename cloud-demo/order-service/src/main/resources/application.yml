@@ -32,10 +32,11 @@ spring:
 #          default:
 #            logger-level: FULL
 
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://localhost:10086/eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10086/eureka
+    allow-redirects: true
 
 mybatis-plus:
   mapper-locations: classpath*:com/example/**/*Mapper.xml

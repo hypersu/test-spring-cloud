@@ -27,6 +27,7 @@ import org.springframework.core.io.ClassPathResource;
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 public class HotelDocumentTest {
@@ -131,5 +132,11 @@ public class HotelDocumentTest {
                 System.out.println(responseItem.error().reason());
             }
         }
+    }
+
+    @Test
+    void testFilter() {
+        // Map<String, List<String>> map = hotelService.filters();
+       // System.out.println(map);
     }
 }
