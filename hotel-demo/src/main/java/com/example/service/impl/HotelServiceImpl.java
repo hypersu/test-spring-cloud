@@ -171,8 +171,8 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
         for (Hit<HotelDoc> hit : hitList) {
             HotelDoc hotelDoc = hit.source();
             List<FieldValue> sorts = hit.sort();
-            if (!sorts.isEmpty() && sorts.size() == 2) {
-                FieldValue fieldValue = sorts.get(1);
+            if (!sorts.isEmpty() && sorts.size() == 1) {
+                FieldValue fieldValue = sorts.get(0);
                 hotelDoc.setDistance(fieldValue.doubleValue());
             }
             list.add(hotelDoc);
