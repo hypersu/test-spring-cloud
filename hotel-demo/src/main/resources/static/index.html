@@ -303,7 +303,7 @@
           this.ops = [];
           return;
         }
-        axios.get("/hotel/suggestion?key=" + this.params.key)
+        axios.get("/hotel/suggestion?prefix=" + this.params.key)
           .then(resp => {
             this.ops = resp.data;
           })

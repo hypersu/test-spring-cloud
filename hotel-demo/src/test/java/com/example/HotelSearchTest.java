@@ -189,4 +189,40 @@ public class HotelSearchTest {
             // System.out.println(bucket.docCount());
         }
     }
+
+    @Test
+    void testSuggest() throws IOException {
+        SearchRequest searchRequest = new SearchRequest.Builder()
+                .index("hotel")
+                .suggest(new Suggester
+                        .Builder()
+                        .text("sd")
+                        .suggesters("hotelSuggest",
+                                new FieldSuggester.Builder()
+                                        .completion(
+                                                new CompletionSuggester
+                                                        .Builder()
+                                                        .field("suggestion")
+                                                        .skipDuplicates(true)
+                                                        .size(20)
+                                                        .build()
+                                        )
+                                        .build()
+                        )
+                        .build()
+                )
+                .build();
+
+        SearchResponse<HotelDoc> searchResponse = client.search(searchRequest, HotelDoc.class);
+        Map<String, List<Suggestion<HotelDoc>>> suggest = searchResponse.suggest();
+        List<Suggestion<HotelDoc>> list = suggest.get("hotelSuggest");
+
+        for (Suggestion<HotelDoc> suggestion : list) {
+            CompletionSuggest<HotelDoc> completionSuggest = suggestion.completion();
+            List<CompletionSuggestOption<HotelDoc>> options = completionSuggest.options();
+            for (CompletionSuggestOption<HotelDoc> option : options) {
+                System.out.println(option.text());
+            }
+        }
+    }
 }

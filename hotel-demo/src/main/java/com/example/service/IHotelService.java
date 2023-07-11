@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface IHotelService extends IService<Hotel> {
-   PageResult search(RequestParams requestParams);
+    PageResult search(RequestParams requestParams);
 
-   Map<String, List<String>> filters(RequestParams requestParams);
+    Map<String, List<String>> filters(RequestParams requestParams);
+
+    List<String> suggestion(String prefix);
 }

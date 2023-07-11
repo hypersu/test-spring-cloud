@@ -9,8 +9,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.FunctionScoreQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.search.Hit;
-import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
+import co.elastic.clients.elasticsearch.core.search.*;
 import co.elastic.clients.json.JsonData;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
@@ -35,6 +34,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.net.ssl.SSLContext;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,29 +42,34 @@ import java.util.Map;
 
 @Service
 public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements IHotelService {
+
+    private RestClient getRestClient() throws IOException {
+        // 使用ca 证书里面包含ca 公钥和一些ca信息
+        ClassPathResource classPathResource = new ClassPathResource("http_ca.crt");
+
+        SSLContext sslContext = TransportUtils.sslContextFromHttpCaCrt(classPathResource.getFile());
+        CredentialsProvider provider = new BasicCredentialsProvider();
+        provider.setCredentials(AuthScope.ANY,
+                new UsernamePasswordCredentials("elastic", "123456"));
+        // create a low level client
+        return RestClient.builder(
+                        HttpHost.create("https://192.168.16.101:9200"))
+                .setHttpClientConfigCallback(
+                        (httpAsyncClientBuilder) -> {
+                            httpAsyncClientBuilder.setSSLContext(sslContext);
+                            httpAsyncClientBuilder.setDefaultCredentialsProvider(provider);
+                            httpAsyncClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+                            return httpAsyncClientBuilder;
+                        })
+                .build();
+    }
+
     @Override
     public PageResult search(RequestParams requestParams) {
         RestClient restClient = null;
         ElasticsearchTransport transport = null;
         try {
-            // 使用ca 证书里面包含ca 公钥和一些ca信息
-            ClassPathResource classPathResource = new ClassPathResource("http_ca.crt");
-
-            SSLContext sslContext = TransportUtils.sslContextFromHttpCaCrt(classPathResource.getFile());
-            CredentialsProvider provider = new BasicCredentialsProvider();
-            provider.setCredentials(AuthScope.ANY,
-                    new UsernamePasswordCredentials("elastic", "123456"));
-            // create a low level client
-            restClient = RestClient.builder(
-                            HttpHost.create("https://192.168.16.101:9200"))
-                    .setHttpClientConfigCallback(
-                            (httpAsyncClientBuilder) -> {
-                                httpAsyncClientBuilder.setSSLContext(sslContext);
-                                httpAsyncClientBuilder.setDefaultCredentialsProvider(provider);
-                                httpAsyncClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-                                return httpAsyncClientBuilder;
-                            })
-                    .build();
+            restClient = getRestClient();
             // create the transport with a Jackson Mapper
             transport = new RestClientTransport(
                     restClient, new JacksonJsonpMapper());
@@ -181,24 +186,7 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
         ElasticsearchTransport transport = null;
         Map<String, List<String>> map = new HashMap<>();
         try {
-            // 使用ca 证书里面包含ca 公钥和一些ca信息
-            ClassPathResource classPathResource = new ClassPathResource("http_ca.crt");
-
-            SSLContext sslContext = TransportUtils.sslContextFromHttpCaCrt(classPathResource.getFile());
-            CredentialsProvider provider = new BasicCredentialsProvider();
-            provider.setCredentials(AuthScope.ANY,
-                    new UsernamePasswordCredentials("elastic", "123456"));
-            // create a low level client
-            restClient = RestClient.builder(
-                            HttpHost.create("https://192.168.16.101:9200"))
-                    .setHttpClientConfigCallback(
-                            (httpAsyncClientBuilder) -> {
-                                httpAsyncClientBuilder.setSSLContext(sslContext);
-                                httpAsyncClientBuilder.setDefaultCredentialsProvider(provider);
-                                httpAsyncClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-                                return httpAsyncClientBuilder;
-                            })
-                    .build();
+            restClient = getRestClient();
             // create the transport with a Jackson Mapper
             transport = new RestClientTransport(
                     restClient, new JacksonJsonpMapper());
@@ -256,5 +244,53 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
             result.add(bucket.key().stringValue());
         }
         return result;
+    }
+
+    @Override
+    public List<String> suggestion(String prefix) {
+        RestClient restClient = null;
+        ElasticsearchTransport transport = null;
+        List<String> list = new LinkedList<>();
+        try {
+            restClient = getRestClient();
+            transport = new RestClientTransport(restClient,
+                    new JacksonJsonpMapper());
+            ElasticsearchClient client = new ElasticsearchClient(transport);
+            SearchRequest searchRequest = new SearchRequest
+                    .Builder()
+                    .suggest(new Suggester
+                            .Builder()
+                            .text(prefix)
+                            .suggesters("hotelSuggest", new FieldSuggester
+                                    .Builder()
+                                    .completion(new CompletionSuggester
+                                            .Builder()
+                                            .field("suggestion")
+                                            .skipDuplicates(true)
+                                            .size(20)
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .build();
+            SearchResponse<HotelDoc> searchResponse = client.search(searchRequest, HotelDoc.class);
+            Map<String, List<Suggestion<HotelDoc>>> suggest = searchResponse.suggest();
+            List<Suggestion<HotelDoc>> suggestions = suggest.get("hotelSuggest");
+            suggestions.forEach(suggestion -> {
+                CompletionSuggest<HotelDoc> completionSuggest = suggestion.completion();
+                List<CompletionSuggestOption<HotelDoc>> options = completionSuggest.options();
+                options.forEach(option -> {
+                    list.add(option.text());
+                });
+            });
+            return list;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(transport);
+            close(restClient);
+        }
     }
 }
