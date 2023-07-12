@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.constants.HotelMqConstants;
+import com.example.constants.HotelMqConst;
 import com.example.pojo.Hotel;
 import com.example.pojo.PageResult;
 import com.example.service.IHotelService;
@@ -41,7 +41,7 @@ public class HotelController {
         // 新增酒店
         hotelService.save(hotel);
         // 发送MQ消息
-        rabbitTemplate.convertAndSend(HotelMqConstants.EXCHANGE_NAME, HotelMqConstants.INSERT_KEY, hotel.getId());
+        rabbitTemplate.convertAndSend(HotelMqConst.EXCHANGE_NAME, HotelMqConst.INSERT_KEY, hotel.getId());
     }
 
     @PutMapping()
@@ -52,7 +52,7 @@ public class HotelController {
         hotelService.updateById(hotel);
 
         // 发送MQ消息
-        rabbitTemplate.convertAndSend(HotelMqConstants.EXCHANGE_NAME, HotelMqConstants.INSERT_KEY, hotel.getId());
+        rabbitTemplate.convertAndSend(HotelMqConst.EXCHANGE_NAME, HotelMqConst.INSERT_KEY, hotel.getId());
     }
 
     @DeleteMapping("/{id}")
@@ -60,6 +60,6 @@ public class HotelController {
         hotelService.removeById(id);
 
         // 发送MQ消息
-        rabbitTemplate.convertAndSend(HotelMqConstants.EXCHANGE_NAME, HotelMqConstants.DELETE_KEY, id);
+        rabbitTemplate.convertAndSend(HotelMqConst.EXCHANGE_NAME, HotelMqConst.DELETE_KEY, id);
     }
 }

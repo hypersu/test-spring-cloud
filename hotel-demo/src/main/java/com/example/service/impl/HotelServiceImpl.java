@@ -7,8 +7,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.FunctionScore;
 import co.elastic.clients.elasticsearch._types.query_dsl.FunctionScoreQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
-import co.elastic.clients.elasticsearch.core.SearchRequest;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.*;
 import co.elastic.clients.json.JsonData;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
@@ -288,6 +287,63 @@ public class HotelServiceImpl extends ServiceImpl<HotelMapper, Hotel> implements
             return list;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            close(transport);
+            close(restClient);
+        }
+    }
+
+    @Override
+    public void insertById(String id) {
+        RestClient restClient = null;
+        ElasticsearchTransport transport = null;
+        try {
+            restClient = getRestClient();
+            transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
+            ElasticsearchClient client = new ElasticsearchClient(transport);
+
+            Hotel hotel = getById(id);
+
+            HotelDoc hotelDoc = new HotelDoc(hotel);
+
+            IndexRequest<HotelDoc> indexRequest = new IndexRequest.Builder<HotelDoc>()
+                    .index("hotel")
+                    .id(id)
+                    .document(hotelDoc)
+                    .build();
+
+            IndexResponse indexResponse = client.index(indexRequest);
+
+            System.out.println(indexResponse.result().toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(transport);
+            close(restClient);
+        }
+    }
+
+    @Override
+    public void deleteById(String id) {
+        RestClient restClient = null;
+        ElasticsearchTransport transport = null;
+        try {
+            restClient = getRestClient();
+            transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
+            ElasticsearchClient client = new ElasticsearchClient(transport);
+
+            DeleteRequest deleteRequest = new DeleteRequest.Builder()
+                    .index("hotel")
+                    .id(id)
+                    .build();
+
+            DeleteResponse deleteResponse = client.delete(deleteRequest);
+
+            System.out.println(deleteResponse.result().toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             close(transport);
             close(restClient);

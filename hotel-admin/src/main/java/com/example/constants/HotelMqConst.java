@@ -1,6 +1,6 @@
 package com.example.constants;
 
-public class HotelMqConstants {
+public class HotelMqConst {
     public static final String EXCHANGE_NAME = "hotel.topic";
     public static final String INSERT_QUEUE_NAME = "hotel.insert.queue";
     public static final String DELETE_QUEUE_NAME = "hotel.delete.queue";
