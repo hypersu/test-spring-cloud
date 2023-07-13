@@ -7,7 +7,7 @@ spring:
     nacos:
       username: nacos
       password: nacos
-      server-addr: 192.168.119.128:8848
+      server-addr: nacos:8848
       discovery:
         cluster-name: HZ
       config:
