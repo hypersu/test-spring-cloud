@@ -3,9 +3,13 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/cloud-user?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.119.128:3306/cloud-user?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:1011
 
 #eureka:
 #  client:

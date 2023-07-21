@@ -22,9 +22,10 @@ spring:
         uri: lb://orderservice
         predicates:
         - Path=/order/**
-        - Before=2023-06-28T17:42:47.789-08:00[Asia/Shanghai]
+        - After=2023-06-28T17:42:47.789-08:00[Asia/Shanghai]
       default-filters:
       - AddRequestHeader=Trust, hello word default-filter!
+      - AddRequestHeader=origin,gateway
       # 全局的跨域处理
       globalcors:
         # 解决options请求拦截问题

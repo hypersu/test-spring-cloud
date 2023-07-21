@@ -5,7 +5,7 @@ spring:
     name: orderservice
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/cloud-order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.119.128:3306/cloud-order?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
   cloud:
@@ -21,22 +21,45 @@ spring:
     loadbalancer:
       eager-load:
         clients:
-        - userservice
+          - userservice
     openfeign:
       httpclient:
         enabled: true
         max-connections: 200
         max-connections-per-route: 50 # 每个路径最大连接数
-#      client:
-#        config:
-#          default:
-#            logger-level: FULL
+    #      client:
+    #        config:
+    #          default:
+    #            logger-level: FULL
+    sentinel:
+      transport:
+        dashboard: localhost:1011
+      web-context-unify: false
+      datasource:
+        flow:
+          nacos:
+            server-addr: 192.168.119.128:8848
+            username: nacos
+            password: nacos
+            data-id: orderservice-flow-rules
+            group-id: SENTINEL_GROUP
+            rule-type: flow
 
 #eureka:
 #  client:
 #    service-url:
 #      defaultZone: http://localhost:10086/eureka
 #    allow-redirects: true
+
+feign:
+  sentinel:
+    enabled: true
+
+seata:
+  registry:
+    type: nacos
+    nacos:
+  tx-service-group:
 
 mybatis-plus:
   mapper-locations: classpath*:com/example/**/*Mapper.xml
@@ -54,6 +77,7 @@ logging:
   level:
     com.example.orderservice: debug
     org.springframework.cloud: debug
+    com.alibaba.*: debug
 
 # 不能使用生产中需要维护IP
 #userservice:
