@@ -1,0 +1,34 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: storage-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.119.128:3306/seata-demo?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+  cloud:
+    nacos:
+      server-addr: 192.168.119.128:8848
+
+mybatis-plus:
+  mapper-locations: classpath*:com/example/**/*Mapper.xml
+  type-aliases-package: com.example.*.pojo
+  global-config:
+    db-config:
+      id-type: auto
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+  configuration-properties:
+    dbType: mysql
+
+logging:
+  level:
+    org.springframework.cloud.alibaba.seata.*: debug
+    com.example.*: debug
+  pattern:
+    dateformat: MM-dd HH:mm:ss:SSS
+
+seata:
