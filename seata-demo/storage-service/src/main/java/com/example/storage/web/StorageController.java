@@ -1,6 +1,6 @@
 package com.example.storage.web;
 
-import com.example.storage.service.StorageService;
+import com.example.storage.service.IStorageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("storage")
 public class StorageController {
 
-    private final StorageService storageService;
+    private final IStorageService storageService;
 
-    public StorageController(StorageService storageService) {
+    public StorageController(IStorageService storageService) {
         this.storageService = storageService;
     }
 

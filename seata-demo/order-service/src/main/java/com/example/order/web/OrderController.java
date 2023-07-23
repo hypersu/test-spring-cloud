@@ -1,7 +1,7 @@
 package com.example.order.web;
 
 import com.example.order.entity.Order;
-import com.example.order.service.OrderService;
+import com.example.order.service.IOrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("order")
 public class OrderController {
 
-    private final OrderService orderService;
+    private final IOrderService orderService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(IOrderService orderService) {
         this.orderService = orderService;
     }
 

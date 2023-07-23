@@ -55,12 +55,6 @@ feign:
   sentinel:
     enabled: true
 
-seata:
-  registry:
-    type: nacos
-    nacos:
-  tx-service-group:
-
 mybatis-plus:
   mapper-locations: classpath*:com/example/**/*Mapper.xml
   type-aliases-package: com.example.*.pojo

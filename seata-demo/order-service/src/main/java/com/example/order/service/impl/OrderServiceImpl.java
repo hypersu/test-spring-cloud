@@ -1,37 +1,30 @@
 package com.example.order.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.order.client.AccountClient;
 import com.example.order.client.StorageClient;
 import com.example.order.entity.Order;
 import com.example.order.mapper.OrderMapper;
-import com.example.order.service.OrderService;
+import com.example.order.service.IOrderService;
 import feign.FeignException;
-import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-/**
- * @author 虎哥
- */
 @Slf4j
 @Service
-public class OrderServiceImpl implements OrderService {
-
+public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
     private final AccountClient accountClient;
     private final StorageClient storageClient;
-    private final OrderMapper orderMapper;
 
-    public OrderServiceImpl(AccountClient accountClient, StorageClient storageClient, OrderMapper orderMapper) {
+    public OrderServiceImpl(AccountClient accountClient, StorageClient storageClient) {
         this.accountClient = accountClient;
         this.storageClient = storageClient;
-        this.orderMapper = orderMapper;
     }
 
     @Override
-    @GlobalTransactional
     public Long create(Order order) {
         // 创建订单
-        orderMapper.insert(order);
+        getBaseMapper().insert(order);
         try {
             // 扣用户余额
             accountClient.deduct(order.getUserId(), order.getMoney());
